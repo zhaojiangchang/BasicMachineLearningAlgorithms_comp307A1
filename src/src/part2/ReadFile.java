@@ -157,17 +157,15 @@ public class ReadFile{
 		//		} catch (IOException ioe) {
 		//			System.exit(1);
 		//		}
-		trainingAdd = "hepatitis-training.dat";
-		testAdd = "hepatitis-test.dat";
+		trainingAdd = "hepatitis-training-run06.dat";
+		testAdd = "hepatitis-test-run06.dat";
 		rf.readTrainingDataFile(trainingAdd);
 		rf.readTestDataFile(testAdd);
-		DtAlgorithm dt = new DtAlgorithm();
+		DtAlgorithm dt = new DtAlgorithm(rf.getAllTrainingInstances(), rf.getTrainingAttNames());
 		Node node = dt.buildTree(rf.getAllTrainingInstances(), rf.getTrainingAttNames());
-		System.out.println(node.getAttName());
-		System.out.println(node.getLeft().getAttName());
-		System.out.println(node.getRight().getAttName());
+
 		for(int i = 0; i<rf.getAllTestInstances().size(); i++){
-			checkInstance(rf.getAllTestInstances().get(i),node);
+			checkTestInstance(rf.getAllTestInstances().get(i),node);
 		}	
 		
 		double accuracy = (double)matched/rf.getAllTestInstances().size();
@@ -180,17 +178,18 @@ public class ReadFile{
 
 	}
 
-	private static void checkInstance(Instance instance, Node root) {
+	private static void checkTestInstance(Instance instance, Node root) {
 		//System.out.println("attr: " +root.getAttName()+ "  index: "+testAttNames.indexOf(root.getAttName()));
-		if(root.getClassName()!=-1 && root.getClassName()== instance.getCategory()){
+		//if(root instanceof DTLeaf && root.getClassName()!=-1 && root.getClassName()== instance.getCategory()){
+		if(root instanceof DTLeaf && root.getClassName()== instance.getCategory()){
 			System.out.println("check match: "+root.getClassName() + "    " +instance.getCategory());
 			matched++;
 		}
-		if (root.getAttName()!=null && instance.getAtt(testAttNames.indexOf(root.getAttName()))&& testAttNames.indexOf(root.getAttName())>-1 ){
-			checkInstance (instance, root.getLeft());
+		if (root instanceof DTNode && instance.getAtt(testAttNames.indexOf(root.getAttName()))){
+			checkTestInstance (instance, root.getLeft());
 		}
-		else if(root.getAttName()!=null && !instance.getAtt(testAttNames.indexOf(root.getAttName()))&& testAttNames.indexOf(root.getAttName())>-1 ){
-			checkInstance (instance, root.getRight());
+		else if(root instanceof DTNode && !instance.getAtt(testAttNames.indexOf(root.getAttName()))){
+			checkTestInstance (instance, root.getRight());
 		}
 	}
 
