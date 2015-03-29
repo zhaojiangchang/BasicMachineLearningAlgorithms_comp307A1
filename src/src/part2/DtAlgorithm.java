@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import dc.ReadFile.Instance;
+import part2.ReadFile.Instance;
 
 public class DtAlgorithm {
 //	private List<ReadFile.Instance>allInstances;
