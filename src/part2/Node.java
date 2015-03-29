@@ -1,4 +1,4 @@
-package dc;
+package part2;
 
 public interface Node {
 	void report(String string);

@@ -1,4 +1,4 @@
-package dc;
+package part2;
 
 import java.text.NumberFormat;
 import java.util.*;

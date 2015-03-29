@@ -1,4 +1,4 @@
-package dc;
+package part2;
 
 public class DTNode implements Node{
 private String attName;
