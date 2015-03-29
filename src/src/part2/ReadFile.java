@@ -13,7 +13,7 @@ public class ReadFile{
 	private List<String> trainingAttNames;
 	private List<ReadFile.Instance> allTrainingInstances;
 	private List<String> testCategoryNames;
-	private static List<String> testAttNames;
+	private List<String> testAttNames;
 	private static DTLeaf DTLeaf;
 	private List<ReadFile.Instance> allTestInstances;
 	static int matched = 0;
@@ -157,40 +157,48 @@ public class ReadFile{
 		//		} catch (IOException ioe) {
 		//			System.exit(1);
 		//		}
-		trainingAdd = "hepatitis-training-run06.dat";
-		testAdd = "hepatitis-test-run06.dat";
+		trainingAdd = "hepatitis-training-run01.dat";
+		testAdd = "hepatitis-test-run01.dat";
 		rf.readTrainingDataFile(trainingAdd);
 		rf.readTestDataFile(testAdd);
 		DtAlgorithm dt = new DtAlgorithm(rf.getAllTrainingInstances(), rf.getTrainingAttNames());
 		Node node = dt.buildTree(rf.getAllTrainingInstances(), rf.getTrainingAttNames());
 
 		for(int i = 0; i<rf.getAllTestInstances().size(); i++){
-			checkTestInstance(rf.getAllTestInstances().get(i),node);
+			rf.checkTestInstance(rf.getAllTestInstances().get(i),node);
 		}	
-		
+
 		double accuracy = (double)matched/rf.getAllTestInstances().size();
 		NumberFormat defaultFormat = NumberFormat.getPercentInstance();
 		defaultFormat.setMinimumFractionDigits(2);
 		System.out.println(" DT Accuracy: " +defaultFormat.format(accuracy)
-					+"  Error: "+ (rf.getAllTestInstances().size() - matched)
-					+"  Total: "+ rf.getAllTestInstances().size() +" test instances.");
+				+"  Error: "+ (rf.getAllTestInstances().size() - matched)
+				+"  Total: "+ rf.getAllTestInstances().size() +" test instances.");
 
 
 	}
 
-	private static void checkTestInstance(Instance instance, Node root) {
+	private void checkTestInstance(Instance instance, Node root) {
 		//System.out.println("attr: " +root.getAttName()+ "  index: "+testAttNames.indexOf(root.getAttName()));
 		//if(root instanceof DTLeaf && root.getClassName()!=-1 && root.getClassName()== instance.getCategory()){
 		if(root instanceof DTLeaf && root.getClassName()== instance.getCategory()){
 			System.out.println("check match: "+root.getClassName() + "    " +instance.getCategory());
 			matched++;
 		}
-		if (root instanceof DTNode && instance.getAtt(testAttNames.indexOf(root.getAttName()))){
-			checkTestInstance (instance, root.getLeft());
-		}
-		else if(root instanceof DTNode && !instance.getAtt(testAttNames.indexOf(root.getAttName()))){
-			checkTestInstance (instance, root.getRight());
+		if(root instanceof DTNode){
+			for(int i = 0; i<testAttNames.size(); i++){
+				if(testAttNames.get(i).equals(root.getAttName())){
+					if(instance.getAtt(i)){
+						checkTestInstance (instance, root.getLeft());
+					}else{
+						checkTestInstance (instance, root.getRight());
+
+					}
+				}
+			}
 		}
 	}
+
+
 
 }

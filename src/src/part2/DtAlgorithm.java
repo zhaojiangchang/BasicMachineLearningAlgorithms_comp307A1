@@ -18,9 +18,9 @@ public class DtAlgorithm {
 	}
 
 	public Node buildTree(List<ReadFile.Instance>instances, List<String>attrs){
-		String bestAtt = "";
 		List<ReadFile.Instance>bestInstsTrue = new ArrayList<ReadFile.Instance>();
 		List<ReadFile.Instance>bestInstsFalse = new ArrayList<ReadFile.Instance>();
+
 		if(instances.size()==0) {
 			int numOfLiveIns = numLiveCat(allInstances);
 			int numOfDieIns = allInstances.size() - numOfLiveIns;
@@ -31,14 +31,14 @@ public class DtAlgorithm {
 			}
 		}
 		if(isPure(instances)){
-			Node leaf =  new DTLeaf(instances.get(0).getCategory(),1);
+			return new DTLeaf(instances.get(0).getCategory(),1);
 		}
 		if(attrs.size()==0){
-			Node leaf =  new DTLeaf(majorityClass(instances), majorityProb(instances));
-			return leaf;
+			return new DTLeaf(majorityClass(instances), majorityProb(instances));
 		}
 		else{
-			List<Double>impuritiesRates = new ArrayList<Double>();
+			String bestAtt = "";
+			double impurity = 100000;
 			for(int i = 0; i<attrs.size(); i++){
 				List<ReadFile.Instance>trueIns = new ArrayList<ReadFile.Instance>();
 				List<ReadFile.Instance>falseIns = new ArrayList<ReadFile.Instance>();
@@ -46,22 +46,18 @@ public class DtAlgorithm {
 					if(instances.get(j).getAtt(i)) trueIns.add(instances.get(j));
 					else falseIns.add(instances.get(j));
 				}
-				double impurity = calPurity(trueIns,falseIns);
-				impuritiesRates.add(impurity);
-				if(impuritiesRates.size()==1){
+
+				double checkImpurity = calPurity(trueIns,falseIns);
+				if(checkImpurity<impurity && checkImpurity!=0 && checkImpurity!=-1){
+					impurity = checkImpurity;
 					bestAtt = attrs.get(i);
 					bestInstsTrue = trueIns;
 					bestInstsFalse = falseIns;
-				}else{
-					Collections.sort(impuritiesRates);
-					if(impuritiesRates.get(0)==impurity){
-						bestAtt = attrs.get(i);
-						bestInstsTrue = trueIns;
-						bestInstsFalse = falseIns;
-					}
 				}
 			}
-			System.out.println(impuritiesRates);
+
+
+			System.out.println(impurity);
 
 			for(int a = 0; a<attrs.size(); a++){
 				if(attrs.get(a).equals(bestAtt)){
@@ -122,21 +118,23 @@ public class DtAlgorithm {
 		int numFalseLiveClass = numLiveCat(falseIns);
 		int numFalseDieClass = falseIns.size() - numFalseLiveClass;
 		if(trueIns.size()==0){
-			return ((double)falseIns.size()/totalSize)*(((double)numFalseLiveClass/falseIns.size())*((double)numFalseDieClass/falseIns.size()));
+						return ((double)falseIns.size()/totalSize)*(((double)numFalseLiveClass/falseIns.size())*((double)numFalseDieClass/falseIns.size()));
+			//return -1;
 		}
 		if(falseIns.size()==0){
-			return ((double)trueIns.size()/totalSize)*(((double)numTrueLiveClass/trueIns.size())*((double)numTrueDieClass/trueIns.size()));
+						return ((double)trueIns.size()/totalSize)*(((double)numTrueLiveClass/trueIns.size())*((double)numTrueDieClass/trueIns.size()));
+			//return -1;
 		}
-		return ((double)trueIns.size()/totalSize)*(((double)numTrueLiveClass/trueIns.size())*((double)numTrueDieClass/trueIns.size()))
+		else return ((double)trueIns.size()/totalSize)*(((double)numTrueLiveClass/trueIns.size())*((double)numTrueDieClass/trueIns.size()))
 				+ ((double)falseIns.size()/totalSize)*(((double)numFalseLiveClass/falseIns.size())*((double)numFalseDieClass/falseIns.size()));
 	}
-	
+
 	private int numLiveCat(List<ReadFile.Instance>ins){
 		int num = 0;
 		for(int i = 0; i<ins.size(); i++){
 			if(ins.get(i).getCategory()==0) num++;
 		}
-	//	System.out.println("num of live: "+ num);
+		//	System.out.println("num of live: "+ num);
 		return num;
 	}
 
