@@ -16,6 +16,7 @@ public class ReadFile{
 	private List<String> testAttNames;
 	private static DTLeaf DTLeaf;
 	private List<ReadFile.Instance> allTestInstances;
+	private int numCorrectLive;
 	static int matched = 0;
 
 	public ReadFile(){
@@ -110,6 +111,7 @@ public class ReadFile{
 
 		private int category;
 		private List<Boolean> vals;
+		private int predicted = -1;
 
 		public Instance(int cat, Scanner s){
 			category = cat;
@@ -133,56 +135,87 @@ public class ReadFile{
 			return ans.toString();
 		}
 
+		public int getPredicted() {
+			return predicted;
+		}
+
+		public void setPredicted(int predicted) {
+			this.predicted = predicted;
+		}
+		
 	}
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+
 		ReadFile rf = new ReadFile();
 		matched = 0;
-		//System.out.print("Enter fileName(Format: xxxx.dat   yyyy.dat: ");
-		// hepatitis-training.dat hepatitis-test.dat
+		System.out.print("Enter fileName(Format: xxxx.dat   yyyy.dat: ");
+//		 hepatitis-training.dat hepatitis-test.dat
 
-		//BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		//
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		
 		String argu;
 		String trainingAdd = null;
 		String testAdd = null;
-		//		try {
-		//			argu = br.readLine();
-		//			String[] tokens = argu.split(" ");
-		//			trainingAdd = tokens[0];
-		//			testAdd = tokens[1];
-		//		
-		//
-		//
-		//		} catch (IOException ioe) {
-		//			System.exit(1);
-		//		}
-		trainingAdd = "hepatitis-training-run08.dat";
-		testAdd = "hepatitis-test-run08.dat";
+				try {
+					argu = br.readLine();
+					String[] tokens = argu.split(" ");
+					trainingAdd = tokens[0];
+					testAdd = tokens[1];
+				
+				} catch (IOException ioe) {
+					System.exit(1);
+				}
+		//trainingAdd = "hepatitis-training-run05.dat";
+		//testAdd = "hepatitis-test-run05.dat";
 		rf.readTrainingDataFile(trainingAdd);
 		rf.readTestDataFile(testAdd);
 		DtAlgorithm dt = new DtAlgorithm(rf.getAllTrainingInstances(), rf.getTrainingAttNames());
 		Node node = dt.buildTree(rf.getAllTrainingInstances(), rf.getTrainingAttNames());
-
 		for(int i = 0; i<rf.getAllTestInstances().size(); i++){
 			rf.checkTestInstance(rf.getAllTestInstances().get(i),node);
-		}	
-
+		}
+		
 		double accuracy = (double)matched/rf.getAllTestInstances().size();
 		NumberFormat defaultFormat = NumberFormat.getPercentInstance();
 		defaultFormat.setMinimumFractionDigits(2);
-		System.out.println(" DT Accuracy: " +defaultFormat.format(accuracy)
-				+"  Error: "+ (rf.getAllTestInstances().size() - matched)
-				+"  Total: "+ rf.getAllTestInstances().size() +" test instances.");
+		int numCorrectLive = 0;
+		int numCorrectDie = 0;
+		int numTestInsLive = 0;
+		int numTestInsDie = 0;
+	
+		for(int j = 0; j<rf.getAllTestInstances().size(); j++){
+			
+			if(rf.getAllTestInstances().get(j).getCategory()==0){
+				numTestInsLive++;
+			}
+			else if(rf.getAllTestInstances().get(j).getCategory()==1){
+				numTestInsDie++;
+			}
+			
+			if(rf.getAllTestInstances().get(j).getPredicted()==rf.getAllTestInstances().get(j).getCategory() 
+					&& rf.getAllTestInstances().get(j).getCategory()==0)
+				numCorrectLive++;
+			else if(rf.getAllTestInstances().get(j).getPredicted()==rf.getAllTestInstances().get(j).getCategory() 
+					&& rf.getAllTestInstances().get(j).getCategory()==1)
+				numCorrectDie++;
+		}
+		
+		System.out.println("Live: " + numCorrectLive + "  correct out of " + numTestInsLive);
+		System.out.println("Die: " + numCorrectDie + "  correct out of " + numTestInsDie);
 
+		
+		System.out.println("Accuracy: ");
+		System.out.println("Decision Tree Accuracy: " +defaultFormat.format(accuracy));
+		System.out.println("Baseline Accuracy (live): "+ defaultFormat.format((double)numTestInsLive/rf.getAllTestInstances().size()));
+		System.out.println("Decision Tree constructed: ");
+		node.report("\t");
 
 	}
 
 	private void checkTestInstance(Instance instance, Node root) {
-		//System.out.println("attr: " +root.getAttName()+ "  index: "+testAttNames.indexOf(root.getAttName()));
-		//if(root instanceof DTLeaf && root.getClassName()!=-1 && root.getClassName()== instance.getCategory()){
+	
 		if(root instanceof DTLeaf && root.getClassName()== instance.getCategory()){
-			//System.out.println("check match: "+root.getClassName() + "    " +instance.getCategory());
+			instance.setPredicted(root.getClassName());
 			matched++;
 		}
 		if(root instanceof DTNode){

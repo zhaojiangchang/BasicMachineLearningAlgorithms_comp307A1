@@ -45,10 +45,10 @@ public void setAttName(String attName) {
 public void report(String indent){
 		System.out.format("%s%s = True:\n",
 		indent, attName);
-		left.report(indent+" ");
+		left.report(indent+"   ");
 		System.out.format("%s%s = False:\n",
 		indent, attName);
-		right.report(indent+" ");
+		right.report(indent+"   ");
 		}
 
 
