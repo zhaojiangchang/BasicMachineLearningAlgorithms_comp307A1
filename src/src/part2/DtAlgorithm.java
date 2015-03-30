@@ -38,26 +38,31 @@ public class DtAlgorithm {
 		}
 		else{
 			String bestAtt = "";
-			double impurity = 100000;
+			double impurity = 2;
 			for(int i = 0; i<attrs.size(); i++){
 				List<ReadFile.Instance>trueIns = new ArrayList<ReadFile.Instance>();
 				List<ReadFile.Instance>falseIns = new ArrayList<ReadFile.Instance>();
 				for(int j= 0; j<instances.size(); j++){
-					if(instances.get(j).getAtt(i)) trueIns.add(instances.get(j));
+					if(instances.get(j).getAtt(allAttrs.indexOf(attrs.get(i)))) 
+						trueIns.add(instances.get(j));
 					else falseIns.add(instances.get(j));
 				}
 
 				double checkImpurity = calPurity(trueIns,falseIns);
-				if(checkImpurity<impurity && checkImpurity!=0 && checkImpurity!=-1){
+				//System.out.println("aaaaaaa: "+attrs.get(i) +"    "+ impurity);
+
+				if(checkImpurity<impurity){
 					impurity = checkImpurity;
 					bestAtt = attrs.get(i);
+					//System.out.println("cccccc: "+bestAtt);
 					bestInstsTrue = trueIns;
 					bestInstsFalse = falseIns;
 				}
 			}
+			System.out.println("bbbbbbbb: "+bestAtt);
 
 
-			System.out.println(impurity);
+
 
 			for(int a = 0; a<attrs.size(); a++){
 				if(attrs.get(a).equals(bestAtt)){
@@ -78,9 +83,9 @@ public class DtAlgorithm {
 			if(instances.get(i).getCategory()==0)
 				majority++;
 		}
-		if(majority>instances.size()/2)
+		if(majority>(double)instances.size()/2)
 			return (double)majority/instances.size();
-		else if(majority<instances.size()/2)
+		else if(majority<(double)instances.size()/2)
 			return 1 - (double)majority/instances.size();
 		return 0.5;
 	}
@@ -92,11 +97,12 @@ public class DtAlgorithm {
 			if(instances.get(i).getCategory()==0)
 				majority++;
 		}
-		if((instances.size()-majority)<instances.size()/2)
+		if((instances.size()-majority)<(double)instances.size()/2)
 			return 0;
-		else if((instances.size()-majority)>instances.size()/2)
+		else if((instances.size()-majority)>(double)instances.size()/2)
 			return 1;
-		return (int)(Math.random() * 2);
+		else return 0;
+		//return (int)(Math.random() * 2);
 	}
 
 	private boolean isPure(List<ReadFile.Instance> instances) {

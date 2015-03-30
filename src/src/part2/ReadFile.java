@@ -157,8 +157,8 @@ public class ReadFile{
 		//		} catch (IOException ioe) {
 		//			System.exit(1);
 		//		}
-		trainingAdd = "hepatitis-training-run01.dat";
-		testAdd = "hepatitis-test-run01.dat";
+		trainingAdd = "hepatitis-training-run08.dat";
+		testAdd = "hepatitis-test-run08.dat";
 		rf.readTrainingDataFile(trainingAdd);
 		rf.readTestDataFile(testAdd);
 		DtAlgorithm dt = new DtAlgorithm(rf.getAllTrainingInstances(), rf.getTrainingAttNames());
@@ -182,7 +182,7 @@ public class ReadFile{
 		//System.out.println("attr: " +root.getAttName()+ "  index: "+testAttNames.indexOf(root.getAttName()));
 		//if(root instanceof DTLeaf && root.getClassName()!=-1 && root.getClassName()== instance.getCategory()){
 		if(root instanceof DTLeaf && root.getClassName()== instance.getCategory()){
-			System.out.println("check match: "+root.getClassName() + "    " +instance.getCategory());
+			//System.out.println("check match: "+root.getClassName() + "    " +instance.getCategory());
 			matched++;
 		}
 		if(root instanceof DTNode){

@@ -35,7 +35,7 @@ public class Perceptron {
 				System.out.println("CORRECT");
 
 			}
-			if(value<=0 && !image.getCategoryName().equals("Yes")){
+			if(value<=0 && !image.getCategoryName().equals("Other")){
 				System.out.println("not CORRECT");
 				double weight = features.get(0).getWeight();  
 				weight -= features.get(0).getValue();
@@ -44,7 +44,7 @@ public class Perceptron {
 				}
 
 			}
-			if(value>0 && !image.getCategoryName().equals("Other")){
+			if(value>0 && !image.getCategoryName().equals("Yes")){
 				System.out.println("not CORRECT");
 				double weight = features.get(0).getWeight();  
 				weight += features.get(0).getValue();
