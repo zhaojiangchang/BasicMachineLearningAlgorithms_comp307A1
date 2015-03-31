@@ -18,9 +18,8 @@ public class Perceptron {
 	private void classifyCal() {
 		double i = 0.0;
 		for(int a = 0; a<features.size(); a++){
-			i += features.get(a).getValue()*weights.get(a);
+			i = i + features.get(a).getValue()*weights.get(a);
 		}
-		System.out.println("results: "+i);
 		results = i;
 
 	}
@@ -28,6 +27,6 @@ public class Perceptron {
 	public double getResults() {
 		return results;
 	}
-	
+
 
 }

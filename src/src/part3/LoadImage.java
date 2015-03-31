@@ -23,7 +23,7 @@ public class LoadImage{
 
 	private int rows = 10;
 	private int cols = 10;
-	private String category = "other";
+	private String category;
 	private String categoryName;
 	private int otherCount=0;
 	private int categoryCount=0;
@@ -37,8 +37,7 @@ public class LoadImage{
 			Scanner f = new Scanner(new File(file));
 			while(f.hasNextLine()){
 				if (!f.next().equalsIgnoreCase("P1")) System.out.println("Not a P1 PBM file" );
-				category = f.next().substring(1);
-				if (!category.equalsIgnoreCase("other")) categoryName=category;
+				categoryName = f.next().substring(1);
 				rows = f.nextInt();
 				cols = f.nextInt();
 				boolean[][]pixels = new boolean[rows][cols];
@@ -51,6 +50,7 @@ public class LoadImage{
 					}
 				}
 				Image image = new Image(categoryName, pixels, rows, cols);
+
 				images.add(image);
 			}
 			f.close();
@@ -62,6 +62,10 @@ public class LoadImage{
 			double weight = 0;
 			while (weight==0 ||weight==1){
 				weight = new Random().nextDouble();
+			}
+			if(i==0){
+				weight = -weight;
+				weights.add(weight);
 			}
 			weights.add(weight);
 		}
@@ -83,58 +87,53 @@ public class LoadImage{
 	public static void main(String[] args){
 		LoadImage loadImage = new LoadImage();
 		loadImage.load("image.data");
-		loadImage.setWeights();
 		List<Image>images = loadImage.getImages();
-		int time = 0;
-		for(int i = 0; i<images.size(); i++){
-			Perceptron perceptron = new Perceptron(images.get(i), loadImage.getWeights());
-			
-			double result = perceptron.getResults();
-			System.out.println("222222222222222:  " + result);
-			if(loadImage.calWeight(result,images.get(i))==-1){
-				i = 0;
-				time++;
-				
-			}
-			if(time==1000){
-				System.out.println("--------  1000 times!");
-				break;
-			}
-		}
-		for(Double weight: loadImage.getWeights()){
-			System.out.println(weight);
-		}
+		int aa = 100;
+		while(aa!=0){
+			loadImage.setWeights();
 
+			int time = 0;
+			for(int i = 0; i<images.size(); i++){
+				Perceptron perceptron = new Perceptron(images.get(i), loadImage.getWeights());
+
+				double value = perceptron.getResults();
+
+				if((value>0 && images.get(i).getCategoryName().equalsIgnoreCase("Yes"))||(value<=0 && images.get(i).getCategoryName().equalsIgnoreCase("Other"))){
+
+				}
+				else if(value<=0 && images.get(i).getCategoryName().equalsIgnoreCase("Yes")){
+
+					for(int a = 0; a<images.get(i).getFeatures().size(); a++){
+
+						loadImage.getWeights().set(a, images.get(i).getFeatures().get(a).getValue() + loadImage.getWeights().get(a));
+					}
+					i = 0;
+					time++;
+
+				}
+				else if(value>0 && images.get(i).getCategoryName().equalsIgnoreCase("Other")){
+
+					for(int a = 0; a<images.get(i).getFeatures().size(); a++){
+						loadImage.getWeights().set(a, loadImage.getWeights().get(a)-images.get(i).getFeatures().get(a).getValue());
+
+					}
+					i = 0;
+					time++;
+				}
+
+
+
+				if(time==1000){
+					//	System.out.println("--------  1000 times!");
+					break;
+				}
+			}
+			System.out.println("--------  -------------------"+ time);
+			//		for(Double weight: loadImage.getWeights()){
+			//			System.out.println(weight);
+			//		}
+			aa--;
+
+		}
 	}
-	public int calWeight(double value, Image image){
-		if((value>0 && image.getCategoryName().equalsIgnoreCase("Yes"))||(value<=0 && image.getCategoryName().equalsIgnoreCase("Other"))){
-
-
-		}
-		else if(value<=0 && image.getCategoryName().equalsIgnoreCase("Yes")){
-			for(int a = 0; a<image.getFeatures().size(); a++){
-				//System.out.println("222");
-				
-				weights.set(a, image.getFeatures().get(a).getValue() + weights.get(a));
-
-			}
-			return -1;
-
-		}
-		else if(value>0 && image.getCategoryName().equalsIgnoreCase("Other")){
-			for(int a = 0; a<image.getFeatures().size(); a++){ 
-				System.out.println("111");
-				weights.set(a, image.getFeatures().get(a).getValue() - weights.get(a));
-
-				//image.getFeatures().get(a).setWeight(image.getFeatures().get(a).getValue() - image.getFeatures().get(a).getWeight());
-
-			}
-			return -1;
-
-		}
-		return 0;
-
-	}
-
-
 }

@@ -16,17 +16,17 @@ public class Image {
 		this.categoryName = categoryName;
 		this.pixels = pixels;
 		this.rows = rows;
-		this.cols = cols;		
+		this.cols = cols;
 		features= new ArrayList<Feature>();
 		features();
-		
+
 	}
 
 	public List<Feature> features(){
 		Feature f = new Feature();
 		f.setValue(1);
 		features.add(f);
-		for(int i = 0; i< numFeatures; i++){
+		for(int i = 0; i< numFeatures-1; i++){
 			int[] row = new int[4];
 			int[] col = new int[4];
 			boolean[] sgn = new boolean[4];
