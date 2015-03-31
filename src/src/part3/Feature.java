@@ -5,37 +5,26 @@ public class Feature {
 	private int[] col;
 	private boolean[] sgn;
 	private Image image = null;
-	private double weight;
-	private int foValue;
+	private int value;
 
-	public Feature(int[] row, int[] col, boolean[] sgn, Image image, double weight) {
+	public Feature(int[] row, int[] col, boolean[] sgn, Image image, int value) {
 		this.row = row;
 		this.col = col;
 		this.sgn = sgn;
 		this.image = image;
-		this.weight = weight;
+		this.value = value;
 	}
 	
 	public Feature(){
+		
 	}
-	public int value(){
-		if(image==null) return 1;
-		else{
-			int sum=0;
-			for(int i=0; i < 4; i++){
-				if ((image.getPixels()[row[i]][col[i]])==(sgn[i])){
-					sum++;
-				}
-			}
-			return (sum>=3)?1:0;
-		}
-
-	}
-	public double getWeight() {
-		return weight;
+	
+	public void setValue(int value) {
+		this.value = value;
 	}
 	public int getValue(){
-		return this.value();
+		return this.value;
 	}
+
 	
 }

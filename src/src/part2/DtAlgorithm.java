@@ -73,9 +73,11 @@ public class DtAlgorithm {
 				}
 			}
 
+			List<String> newAttrs = new ArrayList<String>(attrs);
 
-			Node left = buildTree(bestInstsTrue, attrs);
-			Node right = buildTree(bestInstsFalse, attrs);
+			Node left = buildTree(bestInstsTrue, newAttrs);
+			//clone attrs for right 
+			Node right = buildTree(bestInstsFalse, newAttrs);
 			return new DTNode(bestAtt, left, right); 
 		}	
 	}

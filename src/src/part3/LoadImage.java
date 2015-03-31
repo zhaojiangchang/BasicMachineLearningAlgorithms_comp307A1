@@ -28,15 +28,17 @@ public class LoadImage{
 	private int otherCount=0;
 	private int categoryCount=0;
 	private List<Image>images = new ArrayList<Image>();
+	private List<Double>weights = new ArrayList<Double>();
+
 
 	public void load(String file){
 		try{
 			java.util.regex.Pattern bit = java.util.regex.Pattern.compile("[01]");
 			Scanner f = new Scanner(new File(file));
 			while(f.hasNextLine()){
-				if (!f.next().equals("P1")) System.out.println("Not a P1 PBM file" );
+				if (!f.next().equalsIgnoreCase("P1")) System.out.println("Not a P1 PBM file" );
 				category = f.next().substring(1);
-				if (!category.equals("other")) categoryName=category;
+				if (!category.equalsIgnoreCase("other")) categoryName=category;
 				rows = f.nextInt();
 				cols = f.nextInt();
 				boolean[][]pixels = new boolean[rows][cols];
@@ -55,7 +57,17 @@ public class LoadImage{
 		}
 		catch(IOException e){System.out.println("Load from file failed"); }
 	}
-	
+	public void setWeights(){
+		for(int i = 0; i<images.get(0).getFeatures().size();i++){
+			double weight = 0;
+			while (weight==0 ||weight==1){
+				weight = new Random().nextDouble();
+			}
+			weights.add(weight);
+		}
+	}
+
+
 
 
 	public List<Image> getImages() {
@@ -64,16 +76,65 @@ public class LoadImage{
 
 
 
+	public List<Double> getWeights() {
+		return weights;
+	}
 	// Main
 	public static void main(String[] args){
 		LoadImage loadImage = new LoadImage();
 		loadImage.load("image.data");
+		loadImage.setWeights();
 		List<Image>images = loadImage.getImages();
+		int time = 0;
 		for(int i = 0; i<images.size(); i++){
-			Perceptron perceptron = new Perceptron(images.get(i));
+			Perceptron perceptron = new Perceptron(images.get(i), loadImage.getWeights());
+			
+			double result = perceptron.getResults();
+			System.out.println("222222222222222:  " + result);
+			if(loadImage.calWeight(result,images.get(i))==-1){
+				i = 0;
+				time++;
+				
+			}
+			if(time==1000){
+				System.out.println("--------  1000 times!");
+				break;
+			}
+		}
+		for(Double weight: loadImage.getWeights()){
+			System.out.println(weight);
 		}
 
-	}	
+	}
+	public int calWeight(double value, Image image){
+		if((value>0 && image.getCategoryName().equalsIgnoreCase("Yes"))||(value<=0 && image.getCategoryName().equalsIgnoreCase("Other"))){
+
+
+		}
+		else if(value<=0 && image.getCategoryName().equalsIgnoreCase("Yes")){
+			for(int a = 0; a<image.getFeatures().size(); a++){
+				//System.out.println("222");
+				
+				weights.set(a, image.getFeatures().get(a).getValue() + weights.get(a));
+
+			}
+			return -1;
+
+		}
+		else if(value>0 && image.getCategoryName().equalsIgnoreCase("Other")){
+			for(int a = 0; a<image.getFeatures().size(); a++){ 
+				System.out.println("111");
+				weights.set(a, image.getFeatures().get(a).getValue() - weights.get(a));
+
+				//image.getFeatures().get(a).setWeight(image.getFeatures().get(a).getValue() - image.getFeatures().get(a).getWeight());
+
+			}
+			return -1;
+
+		}
+		return 0;
+
+	}
 
 
 }

@@ -6,54 +6,28 @@ import java.util.Random;
 public class Perceptron {
 	private List<Feature>features;
 	private Image image;
-	private double threshold = new Random().nextDouble();
-	public Perceptron(Image image) {
+	private double results = 0;
+	private List<Double>weights;
+	public Perceptron(Image image, List<Double>weights) {
 		this.features = image.getFeatures();
 		this.image = image;
-		algorithm();
+		this.weights = weights;
+		classifyCal();
 	}
-	public void algorithm(){
-		double num = classifyCal();
-		if(num!=0){
-			calWeight(num);
-		}
-	}
-	private double classifyCal() {
+
+	private void classifyCal() {
 		double i = 0.0;
-		i += features.get(0).getValue()*threshold;
-		for(int a = 1; a<features.size(); a++){
-			i += features.get(a).getValue()*features.get(a).getWeight();
+		for(int a = 0; a<features.size(); a++){
+			i += features.get(a).getValue()*weights.get(a);
 		}
-		System.out.println("aaaaaaaaaa: "+ i);
-		return i;
-		
+		System.out.println("results: "+i);
+		results = i;
+
 	}
-	public void calWeight(double value){
-		int i = 100;
-		while(i>0){
-			if(value>0 && image.getCategoryName().equals("Yes")||value<=0 && image.getCategoryName().equals("Other")){
-				System.out.println("CORRECT");
 
-			}
-			if(value<=0 && !image.getCategoryName().equals("Other")){
-				System.out.println("not CORRECT");
-				double weight = features.get(0).getWeight();  
-				weight -= features.get(0).getValue();
-				for(int a = 1; a<features.size(); a++){
-					weight -= features.get(a).getValue();  
-				}
-
-			}
-			if(value>0 && !image.getCategoryName().equals("Yes")){
-				System.out.println("not CORRECT");
-				double weight = features.get(0).getWeight();  
-				weight += features.get(0).getValue();
-				for(int b = 1; b<features.size(); b++){
-					weight += features.get(b).getValue();  
-				}
-
-			}
-			i--;
-		}
+	public double getResults() {
+		return results;
 	}
+	
+
 }
