@@ -114,7 +114,6 @@ public class LoadImage{
 		}
 		System.out.println("Runs: "+ time+" times");
 		System.out.println("Weights after corrected: ");
-		//}
 		for(Double weight: loadImage.getWeights()){
 			System.out.println(weight);
 		}
