@@ -9,14 +9,16 @@ public class Image {
 	private boolean[][] pixels;
 	private int rows;
 	private int cols;
-	private int numFeatures = 100;
+	private int numFeatures = 50;
 	private List<Feature> features;
+	private Random rand;
 
-	public Image(String categoryName, boolean[][] pixels, int rows, int cols) {
+	public Image(String categoryName, boolean[][] pixels, int rows, int cols, Random rand) {
 		this.categoryName = categoryName;
 		this.pixels = pixels;
 		this.rows = rows;
 		this.cols = cols;
+		this.rand = rand;
 		features= new ArrayList<Feature>();
 		features();
 
@@ -26,14 +28,14 @@ public class Image {
 		Feature f = new Feature();
 		f.setValue(1);
 		features.add(f);
-		for(int i = 0; i< numFeatures-1; i++){
+		for(int i = 1; i< numFeatures-1; i++){
 			int[] row = new int[4];
 			int[] col = new int[4];
 			boolean[] sgn = new boolean[4];
 			for (int j = 0; j<4; j++){
-				row[j] = new Random().nextInt(rows);
-				col[j] = new Random().nextInt(cols);
-				sgn[j] = new Random().nextBoolean();
+				row[j] = rand.nextInt(rows);
+				col[j] = rand.nextInt(cols);
+				sgn[j] = rand.nextBoolean();
 			}
 			int value = value(row,col,sgn);
 			features.add(new Feature(row, col, sgn, this, value));
