@@ -70,15 +70,9 @@ public class LoadImage{
 			weights.add(weight);
 		}
 	}
-
-
-
-
 	public List<Image> getImages() {
 		return images;
 	}
-
-
 
 	public List<Double> getWeights() {
 		return weights;
@@ -88,52 +82,55 @@ public class LoadImage{
 		LoadImage loadImage = new LoadImage();
 		loadImage.load("image.data");
 		List<Image>images = loadImage.getImages();
-		int aa = 100;
-		while(aa!=0){
-			loadImage.setWeights();
+		loadImage.setWeights();
+		int time = 0;
+		for(int j = 0; j<1000; j++){
 
-			int time = 0;
-			for(int i = 0; i<images.size(); i++){
-				Perceptron perceptron = new Perceptron(images.get(i), loadImage.getWeights());
+		for(int i = 0; i<images.size(); i++){
 
-				double value = perceptron.getResults();
+			Perceptron perceptron = new Perceptron(images.get(i), loadImage.getWeights());
+			int value = perceptron.getResult();
 
-				if((value>0 && images.get(i).getCategoryName().equalsIgnoreCase("Yes"))||(value<=0 && images.get(i).getCategoryName().equalsIgnoreCase("Other"))){
+			if((value==1 && images.get(i).getCategoryName().equalsIgnoreCase("Yes"))||(value==0 && images.get(i).getCategoryName().equalsIgnoreCase("Other"))){
+				//System.out.println(value+"   "+ images.get(i).getCategoryName());
 
-				}
-				else if(value<=0 && images.get(i).getCategoryName().equalsIgnoreCase("Yes")){
-
-					for(int a = 0; a<images.get(i).getFeatures().size(); a++){
-
-						loadImage.getWeights().set(a, images.get(i).getFeatures().get(a).getValue() + loadImage.getWeights().get(a));
-					}
-					i = 0;
-					time++;
-
-				}
-				else if(value>0 && images.get(i).getCategoryName().equalsIgnoreCase("Other")){
-
-					for(int a = 0; a<images.get(i).getFeatures().size(); a++){
-						loadImage.getWeights().set(a, loadImage.getWeights().get(a)-images.get(i).getFeatures().get(a).getValue());
-
-					}
-					i = 0;
-					time++;
-				}
-
-
-
-				if(time==1000){
-					//	System.out.println("--------  1000 times!");
-					break;
-				}
 			}
-			System.out.println("--------  -------------------"+ time);
-			//		for(Double weight: loadImage.getWeights()){
-			//			System.out.println(weight);
-			//		}
-			aa--;
+			else if(value==0 && images.get(i).getCategoryName().equalsIgnoreCase("yes")){
+				//System.out.println("value == 1	+	"+value+"   "+ images.get(i).getCategoryName());
 
+				for(int a = 1; a<images.get(i).getFeatures().size(); a++){
+
+					loadImage.getWeights().set(a, loadImage.getWeights().get(a) - images.get(i).getFeatures().get(a).getValue());
+				}
+				//
+
+			}
+			else if(value==1 && images.get(i).getCategoryName().equalsIgnoreCase("other")){
+				//System.out.println("value == 1	-	"+value+"   "+ images.get(i).getCategoryName());
+
+				for(int a = 1; a<images.get(i).getFeatures().size(); a++){
+					loadImage.getWeights().set(a, loadImage.getWeights().get(a)+images.get(i).getFeatures().get(a).getValue());
+
+				}
+				//i = 0;
+
+			}
+			//if(time==1000){
+				//System.out.println("--------  1000 times!");
+				//break;
+			//}
 		}
+		
+		time++;
+		}
+		System.out.println("--------  -------------------"+ time);
+
+		//						for(Double weight: loadImage.getWeights()){
+		//							System.out.println(weight);
+		//						}
+
+
+
+
 	}
 }

@@ -6,7 +6,7 @@ import java.util.Random;
 public class Perceptron {
 	private List<Feature>features;
 	private Image image;
-	private double results = 0;
+	private int result = -1;
 	private List<Double>weights;
 	public Perceptron(Image image, List<Double>weights) {
 		this.features = image.getFeatures();
@@ -20,12 +20,13 @@ public class Perceptron {
 		for(int a = 0; a<features.size(); a++){
 			i = i + features.get(a).getValue()*weights.get(a);
 		}
-		results = i;
+		if (i>0) result = 1;
+		else result = 0;
 
 	}
 
-	public double getResults() {
-		return results;
+	public int getResult() {
+		return result;
 	}
 
 
