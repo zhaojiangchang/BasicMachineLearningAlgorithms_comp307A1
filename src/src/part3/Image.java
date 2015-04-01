@@ -20,13 +20,12 @@ public class Image {
 		this.cols = cols;
 		this.rand = rand;
 		features= new ArrayList<Feature>();
-		features();
+		createFeatures();
 
 	}
 
-	public List<Feature> features(){
-		Feature f = new Feature();
-		f.setValue(1);
+	public void createFeatures(){
+		Feature f = new Feature(1);
 		features.add(f);
 		for(int i = 1; i< numFeatures-1; i++){
 			int[] row = new int[4];
@@ -37,21 +36,21 @@ public class Image {
 				col[j] = rand.nextInt(cols);
 				sgn[j] = rand.nextBoolean();
 			}
-			int value = value(row,col,sgn);
-			features.add(new Feature(row, col, sgn, this, value));
-		}
-		return features;
-	}
-	public int value(int[]row, int[]col, boolean[]sgn){
-			int sum=0;
-			for(int i=0; i < 4; i++){
-				if ((this.getPixels()[row[i]][col[i]])==(sgn[i])){
-					sum++;
-				}
-			}
-			return (sum>=3)?1:0;
-		}
+			int value = featureValue(row, col, sgn);
+			features.add(new Feature(value));
 
+		}
+	}
+	public int featureValue(int[]row, int[]col, boolean[]sgn){
+		int sum=0;
+		for(int i=0; i < 4; i++){
+			if ((pixels[row[i]][col[i]])==(sgn[i])){
+				sum++;
+			}
+		}
+		return (sum>=3)?1:0;
+	}
+	
 	public String getCategoryName() {
 		return categoryName;
 	}
@@ -71,6 +70,7 @@ public class Image {
 	public List<Feature> getFeatures() {
 		return features;
 	}
+	
 
 
 }

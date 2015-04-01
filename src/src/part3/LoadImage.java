@@ -14,8 +14,9 @@ public class LoadImage{
 	private String categoryName;
 	private List<Image>images = new ArrayList<Image>();
 	private List<Double>weights = new ArrayList<Double>();
-	boolean weightsUpdated = false;
+	private boolean weightsUpdated = false;
 	private Random rand = new Random(1637);
+
 
 	public LoadImage(){
 	}
@@ -25,7 +26,8 @@ public class LoadImage{
 			java.util.regex.Pattern bit = java.util.regex.Pattern.compile("[01]");
 			Scanner f = new Scanner(new File(file));
 			while(f.hasNextLine()){
-				if (!f.next().equalsIgnoreCase("P1")) System.out.println("Not a P1 PBM file" );
+				if (!f.next().equalsIgnoreCase("P1")) 
+					System.out.println("Not a P1 PBM file" );
 				categoryName = f.next().substring(1);
 				rows = f.nextInt();
 				cols = f.nextInt();
@@ -34,7 +36,6 @@ public class LoadImage{
 					for (int c=0; c<cols; c++){
 						int num = Integer.parseInt(f.findWithinHorizon(bit,0));
 						pixels[r][c] = (num == 1)? true:false;
-						//	pixels[r][c] = f.next();
 
 					}
 				}
@@ -46,6 +47,7 @@ public class LoadImage{
 		}
 		catch(IOException e){System.out.println("Load from file failed"); }
 	}
+
 	public void setWeights(){
 		for(int i = 0; i<images.get(0).getFeatures().size();i++){
 			double weight = 0;
@@ -55,8 +57,8 @@ public class LoadImage{
 			if(i==0){
 				weight = -weight;
 				weights.add(weight);
-			}
-			else
+
+			}else
 				weights.add(weight);
 		}
 	}
@@ -87,6 +89,7 @@ public class LoadImage{
 			loadImage.setWeightsUpdated(false);
 
 			for(int i = 0; i<images.size(); i++){
+
 				Perceptron perceptron = new Perceptron(images.get(i), loadImage.getWeights());
 				int value = perceptron.getResult();
 

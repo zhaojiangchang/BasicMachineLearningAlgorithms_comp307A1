@@ -18,9 +18,9 @@ public class Perceptron {
 	private void classifyCal() {
 		double i = 0.0;
 		for(int a = 0; a<features.size(); a++){
-			i = i + features.get(a).getValue()*weights.get(a);
+			i = i + (features.get(a).getValue() * weights.get(a));
 		}
-		if (i>0) result = 1;
+		if (i>0.0) result = 1;
 		else result = 0;
 
 	}
