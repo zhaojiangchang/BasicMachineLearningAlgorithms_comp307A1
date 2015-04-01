@@ -9,6 +9,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+/**
+ * @author JackyChang
+ * ID:300282984
+ *
+ */
 public class KNNAlgorithm {
 	private List<Instance> trainingSet;
 	private List<Instance> testSet;

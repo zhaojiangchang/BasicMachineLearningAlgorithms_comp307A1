@@ -7,6 +7,11 @@ import java.util.List;
 
 import part2.ReadFile.Instance;
 
+/**
+ * @author JackyChang
+ * ID:300282984
+ *
+ */
 public class DtAlgorithm {
 	private List<ReadFile.Instance>allInstances;
 	private List<String>allAttrs;

@@ -2,7 +2,11 @@ package part3;
 
 import java.util.List;
 import java.util.Random;
-
+/**
+ * @author JackyChang
+ * ID:300282984
+ *
+ */
 public class Perceptron {
 	private List<Feature>features;
 	private Image image;

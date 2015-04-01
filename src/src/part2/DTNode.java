@@ -1,5 +1,9 @@
 package part2;
-
+/**
+ * @author JackyChang
+ * ID:300282984
+ *
+ */
 public class DTNode implements Node{
 private String attName;
 private Node left;

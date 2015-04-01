@@ -1,6 +1,11 @@
 package part2;
-
+/**
+ * @author JackyChang
+ * ID:300282984
+ *
+ */
 public class DTLeaf implements Node{
+
 
 	private String className;
 	private double probability;

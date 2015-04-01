@@ -1,7 +1,11 @@
 package part3;
 
 import java.util.Random;
-
+/**
+ * @author JackyChang
+ * ID:300282984
+ *
+ */
 public class Feature {
 	private int value = -1;
 	private Random rand;

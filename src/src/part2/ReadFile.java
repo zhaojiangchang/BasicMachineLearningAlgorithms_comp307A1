@@ -3,7 +3,11 @@ package part2;
 import java.text.NumberFormat;
 import java.util.*;
 import java.io.*;
-
+/**
+ * @author JackyChang
+ * ID:300282984
+ *
+ */
 public class ReadFile{
 	// some bits of java code that you may use if you wish.
 	// assumes that the enclosing class has fields:
@@ -17,10 +21,18 @@ public class ReadFile{
 	private static DTLeaf DTLeaf;
 	private List<ReadFile.Instance> allTestInstances;
 	private int numCorrectLive;
-	static int matched = 0;
+	private int matched = 0;
 
 	public ReadFile(){
 
+	}
+
+	public int getMatched() {
+		return matched;
+	}
+
+	public void setMatched(int matched) {
+		this.matched = matched;
 	}
 
 	private void readTrainingDataFile(String fname){
@@ -141,48 +153,8 @@ public class ReadFile{
 		}
 
 	}
-	public static void main(String[] args) {
-		matched = 0;
-		ReadFile rf = new ReadFile();
-		
 
 
-		System.out.print("Enter fileName(Format: hepatitis-training.dat hepatitis-test.dat) or input 'yes' to get average accuracy of the classifiers over the 10 trials: ");
-//				 hepatitis-training.dat hepatitis-test.dat
-
-				BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-				
-				String argu;
-				String trainingAdd = null;
-				String testAdd = null;
-						try {
-							argu = br.readLine();
-							String[] tokens = argu.split(" ");
-							
-							if(tokens[0].equalsIgnoreCase("yes")){
-								rf.runTrails(new ReadFile());
-							}
-							else{
-								trainingAdd = tokens[0];
-								testAdd = tokens[1];
-								rf.runTrainingTestData(new ReadFile(), trainingAdd, testAdd);
-							}
-						
-						} catch (IOException ioe) {
-							System.exit(1);
-						}
-	
-	}
-
-	private void runTrainingTestData(ReadFile rf, String trainingAdd, String testAdd) {
-		rf.readTrainingDataFile(trainingAdd);
-		rf.readTestDataFile(testAdd);
-		DtAlgorithm dt = new DtAlgorithm(rf.getAllTrainingInstances(), rf.getTrainingAttNames());
-		Node node = dt.buildTree(rf.getAllTrainingInstances(), rf.getTrainingAttNames());
-		rf.process(rf, node);
-		node.report("\t");
-		
-	}
 
 	public void runTrails(ReadFile rf){
 		String[]index = {"01", "02", "03", "04", "05","06","07","08","09","10"};
@@ -192,8 +164,8 @@ public class ReadFile{
 		for(int add = 0; add<10; add++){
 			matched = 0;
 			
-			rf.readTrainingDataFile("hepatitis-training-run"+index[add]+".dat");
-			rf.readTestDataFile("hepatitis-test-run"+index[add]+".dat");
+			rf.readTrainingDataFile("data/hepatitis-training-run"+index[add]+".dat");
+			rf.readTestDataFile("data/hepatitis-test-run"+index[add]+".dat");
 			DtAlgorithm dt = new DtAlgorithm(rf.getAllTrainingInstances(), rf.getTrainingAttNames());
 			Node node = dt.buildTree(rf.getAllTrainingInstances(), rf.getTrainingAttNames());
 			double accuracy = rf.process(rf, node);
@@ -239,6 +211,7 @@ public class ReadFile{
 					&& rf.getAllTestInstances().get(j).getCategory()==1)
 				numCorrectDie++;
 		}
+		matched = 0;
 
 		System.out.println("Live: " + numCorrectLive + "  correct out of " + numTestInsLive);
 		System.out.println("Die: " + numCorrectDie + "  correct out of " + numTestInsDie);
@@ -267,6 +240,16 @@ public class ReadFile{
 				}
 			}
 		}
+	}
+
+	public void runTrainingTestData(ReadFile rf, String trainingAdd, String testAdd) {
+		rf.readTrainingDataFile(trainingAdd);
+		rf.readTestDataFile(testAdd);
+		DtAlgorithm dt = new DtAlgorithm(rf.getAllTrainingInstances(), rf.getTrainingAttNames());
+		Node node = dt.buildTree(rf.getAllTrainingInstances(), rf.getTrainingAttNames());
+		rf.process(rf, node);
+		node.report("\t");
+		
 	}
 }
 
