@@ -29,6 +29,7 @@ public class LoadImage{
 	private int categoryCount=0;
 	private List<Image>images = new ArrayList<Image>();
 	private List<Double>weights = new ArrayList<Double>();
+	static boolean weightsUpdated = false;
 
 
 	public void load(String file){
@@ -85,9 +86,9 @@ public class LoadImage{
 		loadImage.setWeights();
 		int time = 0;
 		for(int j = 0; j<1000; j++){
+			weightsUpdated = false;
 
 		for(int i = 0; i<images.size(); i++){
-
 			Perceptron perceptron = new Perceptron(images.get(i), loadImage.getWeights());
 			int value = perceptron.getResult();
 
@@ -99,6 +100,7 @@ public class LoadImage{
 				//System.out.println("value == 1	+	"+value+"   "+ images.get(i).getCategoryName());
 
 				for(int a = 1; a<images.get(i).getFeatures().size(); a++){
+					weightsUpdated = true;
 
 					loadImage.getWeights().set(a, loadImage.getWeights().get(a) - images.get(i).getFeatures().get(a).getValue());
 				}
@@ -107,12 +109,14 @@ public class LoadImage{
 			}
 			else if(value==1 && images.get(i).getCategoryName().equalsIgnoreCase("other")){
 				//System.out.println("value == 1	-	"+value+"   "+ images.get(i).getCategoryName());
+				weightsUpdated = true;
 
 				for(int a = 1; a<images.get(i).getFeatures().size(); a++){
 					loadImage.getWeights().set(a, loadImage.getWeights().get(a)+images.get(i).getFeatures().get(a).getValue());
 
 				}
 				//i = 0;
+				
 
 			}
 			//if(time==1000){
@@ -121,7 +125,9 @@ public class LoadImage{
 			//}
 		}
 		
+		if(weightsUpdated==false) break;
 		time++;
+		
 		}
 		System.out.println("--------  -------------------"+ time);
 

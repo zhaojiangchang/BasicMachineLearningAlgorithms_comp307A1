@@ -9,7 +9,7 @@ public class Image {
 	private boolean[][] pixels;
 	private int rows;
 	private int cols;
-	private int numFeatures = 50;
+	private int numFeatures = 100;
 	private List<Feature> features;
 
 	public Image(String categoryName, boolean[][] pixels, int rows, int cols) {
