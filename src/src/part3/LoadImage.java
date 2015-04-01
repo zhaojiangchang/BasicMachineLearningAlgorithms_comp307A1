@@ -29,7 +29,8 @@ public class LoadImage{
 	private int categoryCount=0;
 	private List<Image>images = new ArrayList<Image>();
 	private List<Double>weights = new ArrayList<Double>();
-	static boolean weightsUpdated = false;
+	private boolean weightsUpdated = false;
+	private Random rand = new Random();
 
 
 	public void load(String file){
@@ -37,7 +38,8 @@ public class LoadImage{
 			java.util.regex.Pattern bit = java.util.regex.Pattern.compile("[01]");
 			Scanner f = new Scanner(new File(file));
 			while(f.hasNextLine()){
-				if (!f.next().equalsIgnoreCase("P1")) System.out.println("Not a P1 PBM file" );
+				if (!f.next().equalsIgnoreCase("P1")) 
+					System.out.println("Not a P1 PBM file" );
 				categoryName = f.next().substring(1);
 				rows = f.nextInt();
 				cols = f.nextInt();
@@ -46,11 +48,10 @@ public class LoadImage{
 					for (int c=0; c<cols; c++){
 						int num = Integer.parseInt(f.findWithinHorizon(bit,0));
 						pixels[r][c] = (num == 1)? true:false;
-						//	pixels[r][c] = f.next();
 
 					}
 				}
-				Image image = new Image(categoryName, pixels, rows, cols);
+				Image image = new Image(categoryName, pixels, rows, cols, rand);
 
 				images.add(image);
 			}
@@ -58,17 +59,27 @@ public class LoadImage{
 		}
 		catch(IOException e){System.out.println("Load from file failed"); }
 	}
+
+	public boolean isWeightsUpdated() {
+		return weightsUpdated;
+	}
+
+	public void setWeightsUpdated(boolean weightsUpdated) {
+		this.weightsUpdated = weightsUpdated;
+	}
+
 	public void setWeights(){
 		for(int i = 0; i<images.get(0).getFeatures().size();i++){
 			double weight = 0;
 			while (weight==0 ||weight==1){
-				weight = new Random().nextDouble();
+				weight = rand.nextDouble();
 			}
 			if(i==0){
 				weight = -weight;
 				weights.add(weight);
-			}
-			weights.add(weight);
+			}else
+
+				weights.add(weight);
 		}
 	}
 	public List<Image> getImages() {
@@ -85,49 +96,34 @@ public class LoadImage{
 		List<Image>images = loadImage.getImages();
 		loadImage.setWeights();
 		int time = 0;
-		for(int j = 0; j<1000; j++){
-			weightsUpdated = false;
+		for(int j = 0; j<100000; j++){
+			loadImage.setWeightsUpdated(false);
+			for(int i = 0; i<images.size(); i++){
 
-		for(int i = 0; i<images.size(); i++){
-			Perceptron perceptron = new Perceptron(images.get(i), loadImage.getWeights());
-			int value = perceptron.getResult();
+				Perceptron perceptron = new Perceptron(images.get(i), loadImage.getWeights());
+				int value = perceptron.getResult();
 
-			if((value==1 && images.get(i).getCategoryName().equalsIgnoreCase("Yes"))||(value==0 && images.get(i).getCategoryName().equalsIgnoreCase("Other"))){
-				//System.out.println(value+"   "+ images.get(i).getCategoryName());
-
-			}
-			else if(value==0 && images.get(i).getCategoryName().equalsIgnoreCase("yes")){
-				//System.out.println("value == 1	+	"+value+"   "+ images.get(i).getCategoryName());
-
-				for(int a = 1; a<images.get(i).getFeatures().size(); a++){
-					weightsUpdated = true;
-
-					loadImage.getWeights().set(a, loadImage.getWeights().get(a) - images.get(i).getFeatures().get(a).getValue());
+				if((value==1 && images.get(i).getCategoryName().equalsIgnoreCase("Yes"))||(value==0 && images.get(i).getCategoryName().equalsIgnoreCase("Other"))){
 				}
-				//
-
-			}
-			else if(value==1 && images.get(i).getCategoryName().equalsIgnoreCase("other")){
-				//System.out.println("value == 1	-	"+value+"   "+ images.get(i).getCategoryName());
-				weightsUpdated = true;
-
-				for(int a = 1; a<images.get(i).getFeatures().size(); a++){
-					loadImage.getWeights().set(a, loadImage.getWeights().get(a)+images.get(i).getFeatures().get(a).getValue());
-
+				else if(value==1 && images.get(i).getCategoryName().equalsIgnoreCase("Other")){
+					loadImage.setWeightsUpdated(true);
+					for(int a=0; a<images.get(i).getFeatures().size(); a++){
+						loadImage.getWeights().set(a, (loadImage.getWeights().get(a) - images.get(i).getFeatures().get(a).getValue()));
+					}
 				}
-				//i = 0;
-				
-
+				else if(value==0 && images.get(i).getCategoryName().equalsIgnoreCase("Yes")){
+					loadImage.setWeightsUpdated(true);
+					for(int a=0; a<images.get(i).getFeatures().size(); a++){
+						loadImage.getWeights().set(a, (loadImage.getWeights().get(a) + images.get(i).getFeatures().get(a).getValue()));
+					}				
+				}
 			}
-			//if(time==1000){
-				//System.out.println("--------  1000 times!");
-				//break;
-			//}
-		}
-		
-		if(weightsUpdated==false) break;
-		time++;
-		
+
+			if(!loadImage.isWeightsUpdated()) {
+				break;
+			}
+			time++;
+
 		}
 		System.out.println("--------  -------------------"+ time);
 
