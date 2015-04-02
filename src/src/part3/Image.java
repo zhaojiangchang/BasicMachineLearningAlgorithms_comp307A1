@@ -31,11 +31,11 @@ public class Image {
 	public void createFeatures(){
 		Feature f = new Feature(1);
 		features.add(f);
-		for(int i = 1; i< numFeatures-1; i++){
+		for(int i = 1; i< numFeatures; i++){
 			features.add(new Feature(rand, pixels, rows, cols));
 		}
 	}
-	
+
 	public String getCategoryName() {
 		return categoryName;
 	}
@@ -55,7 +55,7 @@ public class Image {
 	public List<Feature> getFeatures() {
 		return features;
 	}
-	
+
 
 
 }

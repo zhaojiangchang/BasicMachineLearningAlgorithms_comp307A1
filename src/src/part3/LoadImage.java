@@ -14,7 +14,7 @@ public class LoadImage{
 	private List<Image>images = new ArrayList<Image>();
 	private List<Double>weights = new ArrayList<Double>();
 	private boolean weightsUpdated = false;
-	private Random rand = new Random(1637);
+	private Random rand = new Random(845);
 
 
 	public LoadImage(){
@@ -25,7 +25,7 @@ public class LoadImage{
 			java.util.regex.Pattern bit = java.util.regex.Pattern.compile("[01]");
 			Scanner f = new Scanner(new File(file));
 			while(f.hasNextLine()){
-				if (!f.next().equalsIgnoreCase("P1")) 
+				if (!f.next().equalsIgnoreCase("P1"))
 					System.out.println("Not a P1 PBM file" );
 				categoryName = f.next().substring(1);
 				rows = f.nextInt();

@@ -15,20 +15,20 @@ public class Main {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+
 		System.out.print("Enter fileName: ");
 
 				BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-				
+
 				String argu;
 				String fileName = null;
 						try {
 							argu = br.readLine();
 							String[] tokens = argu.split(" ");
-							fileName = "data/"+tokens[0];						
+							fileName = "data/"+tokens[0];
 						} catch (IOException ioe) {
 							System.exit(1);
 						}
-	
 		LoadImage loadImage = new LoadImage();
 		loadImage.load(fileName);
 		List<Image>images = loadImage.getImages();
@@ -61,12 +61,14 @@ public class Main {
 			time++;
 
 		}
+		System.out.println("Number of features: "+images.get(0).getFeatures().size());
 		System.out.println("Runs: "+ time+" times");
 		System.out.println("Weights after corrected: ");
 		for(Double weight: loadImage.getWeights()){
 			System.out.println(weight);
 		}
 
-	}
+		}
+
 
 }
