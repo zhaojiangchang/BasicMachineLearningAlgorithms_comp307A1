@@ -94,7 +94,7 @@ public class ReadFile{
 		/* instance = classname and space separated attribute values */
 		List<ReadFile.Instance> instances = new ArrayList<ReadFile.Instance>();
 		String ln;
-		while (din.hasNext()){ 
+		while (din.hasNext()){
 			Scanner line = new Scanner(din.nextLine());
 			instances.add(new Instance(trainingCategoryNames.indexOf(line.next()),line));
 		}
@@ -163,13 +163,13 @@ public class ReadFile{
 		defaultFormat.setMinimumFractionDigits(2);
 		for(int add = 0; add<10; add++){
 			matched = 0;
-			
+
 			rf.readTrainingDataFile("data/hepatitis-training-run"+index[add]+".dat");
 			rf.readTestDataFile("data/hepatitis-test-run"+index[add]+".dat");
 			DtAlgorithm dt = new DtAlgorithm(rf.getAllTrainingInstances(), rf.getTrainingAttNames());
 			Node node = dt.buildTree(rf.getAllTrainingInstances(), rf.getTrainingAttNames());
 			double accuracy = rf.process(rf, node);
-				
+
 			System.out.println("----------------------------------------------------");
 			accuracys.add(accuracy);
 		}
@@ -181,7 +181,7 @@ public class ReadFile{
 		System.out.println("----------------------------------------------------");
 		System.out.println("average accuracy of the classifiers over the 10 trials: "+defaultFormat.format(average));
 	}
-	
+
 	public double process(ReadFile rf, Node node){
 		for(int i = 0; i<rf.getAllTestInstances().size(); i++){
 			rf.checkTestInstance(rf.getAllTestInstances().get(i),node);
@@ -204,10 +204,10 @@ public class ReadFile{
 				numTestInsDie++;
 			}
 
-			if(rf.getAllTestInstances().get(j).getPredicted()==rf.getAllTestInstances().get(j).getCategory() 
+			if(rf.getAllTestInstances().get(j).getPredicted()==rf.getAllTestInstances().get(j).getCategory()
 					&& rf.getAllTestInstances().get(j).getCategory()==0)
 				numCorrectLive++;
-			else if(rf.getAllTestInstances().get(j).getPredicted()==rf.getAllTestInstances().get(j).getCategory() 
+			else if(rf.getAllTestInstances().get(j).getPredicted()==rf.getAllTestInstances().get(j).getCategory()
 					&& rf.getAllTestInstances().get(j).getCategory()==1)
 				numCorrectDie++;
 		}
@@ -221,7 +221,7 @@ public class ReadFile{
 		System.out.println("Decision Tree constructed: ");
 		return accuracy;
 	}
-	
+
 	private void checkTestInstance(Instance instance, Node root) {
 
 		if(root instanceof DTLeaf && root.getClassName()== instance.getCategory()){
@@ -249,7 +249,7 @@ public class ReadFile{
 		Node node = dt.buildTree(rf.getAllTrainingInstances(), rf.getTrainingAttNames());
 		rf.process(rf, node);
 		node.report("\t");
-		
+
 	}
 }
 
